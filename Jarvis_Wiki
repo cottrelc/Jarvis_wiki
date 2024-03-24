@@ -1,0 +1,98 @@
+"""
+    Name: jarvis_wiki.py
+    Author: Carson Cottrell
+"""
+
+
+
+import speech_recognition as sr
+
+from sys import exit
+
+import pyttsx3
+
+import wikipedia
+
+
+
+class Jarvis:
+    def __init__(self) -> None:
+
+        self.r = sr.Recognizer()
+        self.engine = pyttsx3.init()
+
+
+    # ------------------------- User Input ----------------------- #
+        
+
+    def get_wikipedia(self):
+        
+        try:
+
+            print("Search Wikipedia: ")
+
+            self.user_input()
+
+            self._summary = wikipedia.summary(self.query, sentences=3)
+
+            print(self._summary)
+            self.engine.say(self._summary)
+            self.engine.runAndWait()
+
+        except:
+
+            print("Try a different search term.")
+        
+    def user_input(self):
+
+
+        with sr.Microphone() as source:
+            print('Listening....')
+
+            audio = self.r.listen(source)
+
+            try:
+                print('Recognizing . . .')
+
+                recognized_words = self.r.recognize_google(
+                    audio,
+                    language='en-US',
+                    show_all=True
+                )
+
+                self.query = recognized_words['alternative'][0]['transcript']
+                print(self.query)
+                self.engine.say(self.query)
+                self.engine.runAndWait()
+            except sr.UnknownValueError:
+                print("Google Speech Recognition could not understand audio")
+
+            except sr.RequestError as e:
+                print(f"Google Speech did not respond: {e}")
+
+
+    def voice_commands(self):
+        if self.query == "quit":
+            print("Goodbye!")
+            exit()
+        elif self.query == "say my name":
+            print("Carson")
+            self.engine.say("Carson")
+            self.engine.runAndWait()
+        elif self.query == "Wikipedia":
+            print("+-----------------------------------+")
+            print("|            Search Wikipedia       |")
+            print("+-----------------------------------+")
+            self.get_wikipedia()
+            
+
+            
+
+
+jarvis = Jarvis()
+while True:
+    print("+-----------------------------------+")
+    print("|         JARVIS Main Menu          |")
+    print("+-----------------------------------+")
+    jarvis.user_input()
+    jarvis.voice_commands()

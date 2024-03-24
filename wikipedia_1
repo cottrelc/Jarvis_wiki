@@ -1,0 +1,13 @@
+"""
+    Name: wikipedia_1.py
+    Author: Carson Cottrell
+"""
+
+import wikipedia
+
+search_terms = input("Search Wikipedia: ")
+
+summary = wikipedia.summary(search_terms, sentences=3)
+
+
+print(summary)
